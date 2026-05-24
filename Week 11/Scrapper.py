@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-
+import csv
 car =input("Enter manufacturer name:")
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
@@ -10,6 +10,7 @@ headers = {
 url=f'https://www.pakwheels.com/new-cars/pricelist/{car}'
 
 response=requests.get(url, headers=headers)
+car_data=[]
 
 if response.status_code == 200:
     soup=BeautifulSoup(response.text,'html.parser')
@@ -22,14 +23,7 @@ if response.status_code == 200:
                 name=cols[0].get_text()
                 price=cols[1].get_text()
                 print(f"Car Name: {name} - Price: {price}")
-        
-        
-        
-    
-    
-    
-    
-    
+
     
     
 else:
@@ -37,7 +31,16 @@ else:
 
 # function to save data on csv file
 def save_to_csv(data, filename):
-    pass
+    with open(filename,mode='w',newline='',encoding='utf-8') as file:
+        writer=csv.writer(file)
+        writer.writerow(['Car Name','Price'])
+        for item in data:
+            writer.writerow([item['name'],item['price']])
+if car_data:
+    save_to_csv(car_data,'car_prices.csv')
+    print("Data saved to car_prices.csv")
+    
+
 
 
 
